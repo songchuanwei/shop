@@ -1,0 +1,223 @@
+{extend name="layout:index"/}
+
+{block name="css"}
+    <link rel="stylesheet" type="text/css" href="/admin/simditor/css/simditor.css">
+{/block}
+{block name="header_js"}
+    <script type="text/javascript"  src="/admin/simditor/js/module.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/hotkeys.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/uploader.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/simditor.js"></script>
+{/block}
+
+{block name="content"}
+    <div class="ibox-title">
+        <h5>修改商品</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="form-horizontal m-t">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">商品名称：</label>
+                <div class="col-sm-10">
+                    <input id="name" name="name" value="{$good->name}" type="text" class="form-control" placeholder="商品名称：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">商品类型：</label>
+                <div class="col-sm-10">
+                    <select class="form-control m-b" name="good_type_id" id="good_type_id">
+                        {foreach $goodtypes as $goodtype} 
+                            {if condition="$goodtype->id eq $good->good_type_id"}
+                            <option value="{$goodtype->id}" selected="select">{$goodtype->name}</option>
+                            {else /}
+                            <option value="{$goodtype->id}">{$goodtype->name}</option>
+                            {/if}
+                         {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">价格：</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="price" value="{$good->price}" placeholder="价格：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">优惠后价格(0为不优惠)：</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="a_price" value="{$good->a_price}" placeholder="优惠后价格" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">库存：</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="stock" value="{$good->stock}" placeholder="库存：" required="" aria-required="true">
+                </div>
+            </div>
+    
+            <div class="form-group">
+                <label class="col-sm-2 control-label">商品图片(可多选,至少二张,默认不选为不修改)：</label>
+                <div class="col-sm-10">
+                  <input type="file" class="form-control" id="img" name="img[]" multiple style="display: none;">          
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                </label>
+                {foreach :setImgs($good->imgs) as $v}
+                <label class="col-sm-2 control-label">
+                    <img src="{$v}" style="height: 50px;width: 100px;" onclick="img('{$v}')">  
+                </label>
+                {/foreach}
+                
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">商品简介：</label>
+                <div class="col-sm-10">
+                    <textarea name="content" id="editor" cols="100" rows="8" minlength="10" style="visibility:hidden;"placeholder="填写内容..">{$good->content}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <button id="btn" class="btn btn-primary" type="submit">提交</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+{/block}
+
+{block name="js"}
+    <script src="/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/admin/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/admin/js/demo/form-validate-demo.min.js"></script>
+    <script src="/admin/js/plugins/prettyfile/bootstrap-prettyfile.js"></script>
+
+    <script>
+
+        $('input[type="file"]').prettyFile();
+
+       $("#btn").click(function(event){
+            var name=$('#name').val();
+            var good_type_id=$('#good_type_id').val();
+            var price=$('#price').val();
+            var a_price=$('#a_price').val();
+            var stock=$('#stock').val();
+            var content=$('#editor').val();
+            if(name.length==0){
+                layer.msg("商品名称不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(parseInt(price)<=0){
+                layer.msg("价格不能小于等于0",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            if(parseInt(a_price)<0 || parseInt(a_price)>=parseInt(price)){
+                layer.msg("优惠后价格不能小于0或者大于价格",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(stock<=0){
+                layer.msg("库存不能小于等于0",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            if(content.length==0){
+                layer.msg("商品简介不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+
+
+            var formData = new FormData();
+
+            var file_obj = document.getElementById('img').files; 
+            if(file_obj){
+
+                if(file_obj.length!=0 && file_obj.length<1){
+                    layer.msg("请合理上传商品图片",{icon:2,time:1000});
+                    event.preventDefault();
+                    return false;
+                }
+
+                for(var i=0;i<file_obj.length;i++){
+                    formData.append('imgs[]', file_obj[i]);
+                }
+            }
+            
+            formData.append("name",name);
+            formData.append("id",'{$good->id}');
+            formData.append("good_type_id",good_type_id);
+            formData.append("price",price);
+            formData.append("a_price",a_price);
+            formData.append("stock",stock);
+            formData.append("content",content);
+
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/admin/good/doedit',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        parent.location.reload();
+                        window.close();
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+
+
+         }); 
+
+
+        $(document).ready(function(){
+            var editor = new Simditor({
+                textarea: $('#editor'),
+                upload: {
+                    url: '/admin/login/uploadimg',
+                    params: '',
+                    fileKey: 'upload_file',
+                    connectionCount: 3,
+                    leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+                },
+                pasteImage: true,
+            });
+        });
+
+        function img(url) {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                shadeClose: true,
+                content: "<img alt='图片详情' title='图片详情' src=" + url + " />"
+            });
+        }
+
+    </script>
+{/block}
+

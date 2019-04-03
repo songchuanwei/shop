@@ -1,0 +1,176 @@
+{extend name="layout:index"/}
+
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="/admin/simditor/css/simditor.css">
+<style>
+    .social-feed-separated .social-feed-box {
+        margin-left: 0;
+    }
+     .aaa{
+        margin-right: 150px;
+    }
+    .reply {
+        margin-left: 150px;
+    }
+
+</style>
+{/block}
+
+{block name="header_js"}
+    <script type="text/javascript"  src="/admin/simditor/js/module.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/hotkeys.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/uploader.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/simditor.js"></script>
+{/block}
+
+
+{block name="content"}
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{$user->username}</h5>
+                </div>
+
+
+
+                {foreach $admin->services($user->id)->order('create_time','asc')->select() as $service}
+                     <div class="col-sm-12">
+                        <div class="social-feed-separated {$service->type==2?'reply':'aaa'}">
+                            
+                            <div class="social-feed-box">
+                                <div class="social-avatar">
+                                    <a href="#">
+                                                {$service->type==1?$service->user->username:$admin->username}
+                                            </a>
+                                    <small class="text-muted">{$service->create_time}</small>
+                                    <span class="badge badge-danger" onclick="del('{$service->id}')">删除</span>
+                                </div>
+                                <div class="social-body">
+                                    <p>
+                                        {$service->content}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {/foreach}
+
+            </div>
+                
+
+            <div class="ibox-content">
+                <div class="form-horizontal m-t">
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">回复：</label>
+                        <div class="col-sm-10">
+                            <textarea name="content" id="editor" cols="100" rows="8" minlength="10" style="visibility:hidden;"placeholder="说点什么.."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <button id="btn" class="btn btn-primary" type="submit">提交</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div> 
+
+    </div>
+
+{/block}
+
+{block name="js"}
+
+    <script type="text/javascript">
+
+
+        $("#btn").click(function(event){
+            var content=$('#editor').val();
+            if(content.length==0){
+                layer.msg("回复内容不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/admin/service/doshow',
+                data: {
+                    content:content,
+                    user_id:'{$user->id}',
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        window.location.reload();
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+
+
+         });
+
+
+        function img(url) {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                shadeClose: true,
+                content: "<img alt='图片详情' title='图片详情' src=" + url + " />"
+            });
+        }
+
+
+        function del(id) {
+            layer.confirm('确认要删除吗？',function(index){
+                $.ajax({
+                    type: 'get',
+                    url: "/admin/service/del?id="+id,
+                    success: function(data){
+                        if(data.error==0){
+                            layer.msg(data.msg,{icon:1,time:1000});
+                            location.reload();
+                        }else{
+                            layer.msg(data.msg,{icon:2,time:1000});
+                        }
+                    },
+                });
+            });
+        }
+
+
+         $(document).ready(function(){
+            var editor = new Simditor({
+                textarea: $('#editor'),
+                upload: {
+                    url: '/admin/login/uploadimg',
+                    params: '',
+                    fileKey: 'upload_file',
+                    connectionCount: 3,
+                    leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+                },
+                pasteImage: true,
+            });
+        }); 
+        
+    </script>
+{/block}

@@ -1,0 +1,428 @@
+{extend name="layout:index"/}
+
+{block name="css"}
+    <link rel="stylesheet" type="text/css" href="/admin/simditor/css/simditor.css">
+{/block}
+{block name="header_js"}
+<script src="/admin/js/jquery.min.js?v=2.1.4"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/module.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/hotkeys.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/uploader.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/simditor.js"></script>
+{/block}
+
+{block name="content"}
+
+<!--== Start Page Header ==-->
+<div id="page-header-wrapper">
+    <div class="container">
+        <div class="row">
+            <!-- Page Title Area Start -->
+            <div class="col-6">
+                <div class="page-title-wrap">
+                    <h1>商品详情</h1>
+                </div>
+            </div>
+            <!-- Page Title Area End -->
+
+            <!-- Page Breadcrumb Start -->
+            <div class="col-6 m-auto">
+                <nav class="page-breadcrumb-wrap">
+                    <ul class="nav justify-content-end">
+                        <li><a href="/index/index">首页</a></li>
+                        <li><a href="/good/index">商品列表</a></li>
+                        <li><a href="/good/show?id={$good->id}" class="current">商品详情</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Page Breadcrumb End -->
+        </div>
+    </div>
+</div>
+<!--== End Page Header ==-->
+
+<!--== Start Single Product Wrapper ==-->
+<div id="single-product-page-wrapper" class="page-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Single Product Page Content Start -->
+            <div class="col-lg-12">
+                <div class="single-product-page-content">
+                    <div class="row">
+                        <!-- Product Thumbnail Area Start -->
+                        <div class="col-lg-5">
+                            <div class="product-thumbnail-wrap">
+                                <div class="product-image-carousel">
+                                	{foreach :setImgs($good->imgs) as $v}
+                                    <div class="single-image-item">
+                                        <img class="img-fluid" src="{$v}"
+                                             alt="Product"/>
+                                    </div>
+									{/foreach}
+                                </div>
+
+                                <div class="pro-img-nav-carousel mt-3">
+									{foreach :setImgs($good->imgs) as $v}
+                                    <div class="pro-nav-item">
+                                        <img class="img-fluid" src="{$v}"
+                                             alt="Product"/>
+                                    </div>
+                                    {/foreach}
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Thumbnail Area End -->
+
+                        <!-- Product Details Area Start -->
+                        <div class="col-lg-7">
+                            <div class="product-details">
+                                <h2>{$good->name}</h2>
+
+                                <p class="pro-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-half"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+
+                                <div class="price-group">
+                                	{if $good->a_price!=0 && $good->a_price<$good->price}
+                                    <span class="price">{$good->a_price}元</span>
+                                    <del class="price sale-price">{$good->price}元</del>
+                                    {else/}
+                                    <span class="price">{$good->price}元</span>
+                                    {/if}
+                                </div>
+
+                                <div class="product-info-stock-sku">
+                                    <span class="product-stock-status text-success">库存</span>
+                                    <span class="product-sku-status"> {$good->stock}</span>
+                                </div>
+                                <div class="product-info-stock-sku">
+                                    <span class="product-stock-status text-success">店铺</span>
+                                    <a href="/index/adminshow?id={$good->admin->id}"><span class="product-sku-status"> {$good->admin->username}</span></a>
+                                </div>
+
+                                <p class="product-desc"> {:setStr(strip_tags($good->admin->content),250)}</p>
+
+                                <div class="product-quantity d-sm-flex align-items-center">
+                                    <div class="pro-quantity">
+                                        <div class="pro-qty"><input type="text" id="num" value="1"/></div>
+                                    </div>
+									
+									{if condition="session('username')"}
+                                    <a onclick="cart('{$good->id}')" class="btn btn-transparent btn-semi-round"><i
+                                            class="fa fa-shopping-cart"></i> 加入购物车</a>
+                                    {else/}
+                                    <a onclick="login()" class="btn btn-transparent btn-semi-round"><i
+                                            class="fa fa-shopping-cart"></i> 加入购物车</a>
+                                    {/if}
+                                </div>
+
+                                <div class="product-btn-group">
+                                    
+
+                                    {if condition="session('username')"}
+                                        {if condition="$good->loveHasUser() gt 0"}
+                                            {if condition="$good->compareHasUser() gt 0"}
+	                                            <a onclick="love('{$good->id}',2,2)" class="btn btn-round btn-transparent-love"><i
+	                                            class="fa fa-heart-o"></i></a>
+	                                    		<a onclick="love('{$good->id}',3,2)" class="btn btn-round btn-transparent-love"><i
+	                                            class="fa fa-exchange"></i></a>
+	                                        {else /}
+	                                             <a onclick="love('{$good->id}',2,2)" class="btn btn-round btn-transparent-love"><i
+	                                            class="fa fa-heart-o"></i></a>
+	                                    		<a onclick="love('{$good->id}',3,1)" class="btn btn-round btn-transparent"><i
+	                                            class="fa fa-exchange"></i></a>
+	                                        {/if}
+                                        {else /}
+                                             {if condition="$good->compareHasUser() gt 0"}
+                                                <a onclick="love('{$good->id}',2,1)" class="btn btn-round btn-transparent"><i
+                                                class="fa fa-heart-o"></i></a>
+                                                <a onclick="love('{$good->id}',3,2)" class="btn btn-round btn-transparent-love"><i
+                                                class="fa fa-exchange"></i></a>
+                                            {else /}
+                                                <a onclick="love('{$good->id}',2,1)" class="btn btn-round btn-transparent"><i
+                                                class="fa fa-heart-o"></i></a>
+                                                <a onclick="love('{$good->id}',3,1)" class="btn btn-round btn-transparent"><i
+                                                class="fa fa-exchange"></i></a>
+                                            {/if}
+                                        {/if}
+                                    {else /}
+                                            
+                                        <a onclick="login()" class="btn btn-round btn-transparent"><i
+                                            class="fa fa-heart-o"></i></a>
+                                    	<a onclick="login()" class="btn btn-round btn-transparent"><i
+                                            class="fa fa-exchange"></i></a>
+                                    {/if}
+
+                                </div>
+
+                                <!-- Product Share -->
+                                <div class="product-share-area">
+                                    <a href="/index/service?id={$good->admin->id}" class="btn btn-transparent btn-semi-round"><i class="fa fa-shopping-cart"></i> 联系客服</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Details Area End -->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Product Full Description Start -->
+                            <div class="product-full-info-reviews">
+                                <!-- Single Product tab Menu -->
+                                <nav class="nav" id="nav-tab">
+                                    <a class="active" id="description-tab" data-toggle="tab" href="#description">商品简介</a>
+                                    <a id="reviews-tab" data-toggle="tab" href="#reviews">评论</a>
+                                </nav>
+                                <!-- Single Product tab Menu -->
+
+                                <!-- Single Product tab Content -->
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="description">
+                                        
+                                       {$good->content}
+                                    </div>
+
+                                    <div class="tab-pane fade" id="reviews">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="product-ratting-wrap">
+                                                    
+                                                    
+                                                    <div class="rattings-wrapper">
+														
+														{foreach $good->comments()->select() as $comment}
+                                                        <div class="sin-rattings">
+                                                            <div class="ratting-author">
+                                                                <h3>{$comment->user->username}</h3>
+                                                                <div class="ratting-star">
+
+																	{for start="0" end="$comment->grade"}
+                                                                    <i class="fa fa-star"></i>
+                                                                    
+                                                                    {/for}
+
+                                                                    {for start="$comment->grade" end="5"}
+                                                                    <i class="fa fa-star-o"></i>
+                                                                    
+                                                                    {/for}
+					
+                                                                    <span>({$comment->grade})</span>
+                                                                </div>
+                                                            </div>
+                                                            <p>{$comment->content}</p>
+                                                        </div>
+                                                        {/foreach}
+
+                                                    </div>
+                                                    
+                                                {if condition="session('username')"}
+                                                    {if $user->userHasGood($good->id)}
+                                                    <div class="ratting-form-wrapper">
+                                                        <h3>评价（您的好评是我们努力的动力！）</h3>
+                                                        
+                                                        <div class="ratting-form row">
+                                                            <div class="col-12 mb-4">
+                                                                <h5>星级:</h5>
+                                                                <div class="ratting-star fix">
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                </div>
+                                                                <input type="hidden" id="grade" value="5" />
+                                                            </div>
+                                                            <div class="col-12 mb-10">
+                                                                <textarea name="content" id="editor" cols="100" rows="12" minlength="10" style="visibility:hidden;"placeholder="说点什么.."></textarea>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                
+									                            <input value="评价" id="btn" type="submit">
+									                            
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    {/if}
+
+                                                {/if}
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Single Product tab Content -->
+                            </div>
+                            <!-- Product Full Description End -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Single Product Page Content End -->
+        </div>
+    </div>
+</div>
+<!--== End Single Product Wrapper ==-->
+
+{/block}
+{block name="js"}
+	<script>
+		
+		//加入购物车
+        function cart(id) {
+        	var stock=Number('{$good->stock}');
+            var num=$('#num').val();
+            if(num==0 || num>stock){
+                layer.msg("数量错误",{icon:2,time:1000});
+                return false;
+            }
+            
+             $.ajax({
+                type: 'GET',
+                url: '/good/cart?good_id='+id+'&num='+num,
+                success: function(data){
+                    if(data.error==0){
+                        layer.msg('加入购物车成功',{icon:1,time:1000});
+                        window.location.href="/good/goodcart";
+                    }else{
+                        layer.msg('加入购物车失败，请稍后再试',{icon:2,time:1000});
+                    }
+                },
+            });
+        
+
+        }
+
+		//判断登陆
+        function login() {
+            layer.confirm('请先登录？',function(index){
+                window.location.href="/login/login";
+            });
+        }
+
+
+
+        //喜欢
+        function love(id,num,type) {
+            if(type==1){
+                 $.ajax({
+                    type: 'GET',
+                    url: '/good/love?good_id='+id+'&type='+type+'&num='+num,
+                    success: function(data){
+                        if(data.error==0){
+                            layer.msg('操作成功',{icon:1,time:1000});
+                            if(num==2){
+                                window.location.href="/good/lovecart";
+                            }else{
+                                window.location.href="/good/comparecart";
+                            }
+                        }else{
+                            layer.msg(data.msg,{icon:2,time:1000});
+                        }
+                    },
+                });
+            }else{
+                if(type==2){
+                    //取消赞
+                    layer.confirm('确定取消吗？',function(index){
+                        //改为启用
+                        $.ajax({
+                            type: 'GET',
+                            url: '/good/love?good_id='+id+'&type='+type+'&num='+num,
+                            success: function(data){
+                                if(data.error==0){
+                                    layer.msg('有缘再见',{icon:1,time:1000});
+                                    location.reload();
+                                }else{
+                                    layer.msg('修改失败，请稍后再试',{icon:2,time:1000});
+                                }
+                            },
+                        });
+                    });
+
+                }else{
+                    layer.msg('参数错误',{icon:2,time:1000});
+                }
+            }
+
+        }
+
+
+        //评论星
+	    $('.fix').on('mousedown','.fa',function(){
+	        if($(this).hasClass('fa-star')){	            
+	            $(this).addClass('fa-star-o').removeClass('fa-star').siblings('.fa').addClass('fa-star-o').removeClass('fa-star');
+	            $(this).addClass('fa-star-o').removeClass('fa-star').prevAll('.fa').addClass('fa-star').removeClass('fa-star-o');
+	            $('#grade').val($(this).index());
+	        }else{     
+	            $(this).addClass('fa-star').removeClass('fa-star-o').prevAll('.fa').addClass('fa-star').removeClass('fa-star-o');
+	            $('#grade').val($(this).index()+1);
+	        }
+	    });
+
+
+	    $("#btn").click(function(event){
+            var content=$('#editor').val();
+            if(content.length==0){
+                layer.msg("评论内容不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/good/comment',
+                data: {
+                    content:content,
+                    grade:$('#grade').val(),
+                    good_id:'{$good->id}',
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        window.location.reload();
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+
+
+         });
+
+
+     $(document).ready(function(){
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            upload: {
+                url: '/admin/login/uploadimg',
+                params: '',
+                fileKey: 'upload_file',
+                connectionCount: 3,
+                leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+            },
+            pasteImage: true,
+        });
+    }); 
+
+	    
+	</script>
+{/block}

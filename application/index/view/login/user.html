@@ -1,0 +1,122 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+
+
+
+
+
+<!--== Start Login & Register Page ==-->
+<div id="login_reg-page-wrapper" class="page-padding">
+    <div class="container">
+        <div class="member-area-from-wrap">
+            <div class="row">
+
+                <!-- Register Content Start -->
+                <div class="col-lg-6">
+                    <div class="login-reg-form-wrap signup-form">
+                        <h2>个人信息修改</h2>
+                        
+                            <div class="single-input-item">
+                                <input type="text" id="username" value="{$user->username}" placeholder="用户名：" required/>
+                            </div>
+
+                            <div class="single-input-item">
+                                <input type="number" id="phone" value="{$user->phone}" placeholder="手机号：" required/>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="single-input-item">
+                                        <input type="password" id="password" placeholder="密码：(不填为不修改)" required/>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="single-input-item">
+                                        <input type="password" id="password1" placeholder="确认密码：(不填为不修改)" required/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="single-input-item">
+                                <button id="btn" class="btn btn-brand">提交</button>
+                            </div>
+                        
+                    </div>
+                </div>
+                <!-- Register Content End -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Login & Register Page ==-->
+
+
+{/block}
+
+{block name="js"}
+    <script>
+
+       $("#btn").click(function(event){
+            var username=$('#username').val();
+            var phone=$('#phone').val();
+            var password=$('#password').val();
+            var password1=$('#password1').val();
+            if(username.length==0){
+                layer.msg("用户名不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(phone.length==0 || isPhoneNo(phone) == false){
+                layer.msg("手机号格式不正确",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(password1.length!=0 && password1!=password){
+                layer.msg("确认密码与密码不相同",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/login/douser',
+                data: {
+                    username:username,
+                    phone:phone,
+                    id:'{$user->id}',
+                    password:password
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        window.location.href='/index/index';
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+        }); 
+
+
+       
+
+        // 验证手机号
+        function isPhoneNo(phone) {
+            var pattern = /^1[34578]\d{9}$/;
+            return pattern.test(phone);
+        } 
+
+    </script>
+{/block}

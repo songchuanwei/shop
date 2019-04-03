@@ -1,0 +1,212 @@
+{extend name="layout:index"/}
+
+{block name="css"}
+    <link rel="stylesheet" type="text/css" href="/admin/simditor/css/simditor.css">
+{/block}
+{block name="header_js"}
+    <script type="text/javascript"  src="/admin/simditor/js/module.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/hotkeys.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/uploader.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/simditor.js"></script>
+{/block}
+
+{block name="content"}
+    <div class="ibox-title">
+        <h5>新增店铺</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="form-horizontal m-t">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">店铺名：</label>
+                <div class="col-sm-10">
+                    <input id="name" name="name" type="text" class="form-control" placeholder="店铺名：" required="" aria-required="true">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">店铺管理人员姓名：</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="username" placeholder="店铺管理人员姓名：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">店铺管理人员手机号：</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="phone" placeholder="店铺管理人员手机号：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">密码：</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="password" placeholder="密码：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">确认密码：</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="password1" placeholder="确认密码：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">店铺地址：</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="address" placeholder="店铺地址：" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">店铺图片：</label>
+                <div class="col-sm-10">
+                  <input type="file" class="form-control" id="img" style="display: none;">          
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">商品简介：</label>
+                <div class="col-sm-10">
+                    <textarea name="content" id="editor" cols="100" rows="8" minlength="10" style="visibility:hidden;"placeholder="填写内容..">
+                    </textarea>
+                </div>
+            </div>
+
+            
+            <div class="form-group">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <button id="btn" class="btn btn-primary" type="submit">提交</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+{/block}
+
+{block name="js"}
+    <script src="/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/admin/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/admin/js/demo/form-validate-demo.min.js"></script>
+    <script src="/admin/js/plugins/prettyfile/bootstrap-prettyfile.js"></script>
+
+    <script>
+
+        $('input[type="file"]').prettyFile();
+
+
+        $("#btn").click(function(event){
+            var username=$('#username').val();
+            var name=$('#name').val();
+            var phone=$('#phone').val();
+            var address=$('#address').val();
+            var password=$('#password').val();
+            var password1=$('#password1').val();
+            var content=$('#editor').val();
+            if(username.length==0){
+                layer.msg("店铺管理人员姓名不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(name.length==0){
+                layer.msg("店铺名不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(address.length==0){
+                layer.msg("店铺地址不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(phone.length==0 || isPhoneNo(phone) == false){
+                layer.msg("手机号格式不正确",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(password.length==0){
+                layer.msg("密码不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(password1!=password){
+                layer.msg("确认密码与密码不相同",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+             if(content.length==0){
+                layer.msg("店铺简介不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+
+            var file_obj = document.getElementById('img').files[0];
+            if(!file_obj){
+                layer.msg("请上传头像",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            var formData = new FormData();
+            formData.append("img",file_obj);
+            formData.append("username",username);
+            formData.append("name",name);
+            formData.append("address",address);
+            formData.append("content",content);
+            formData.append("phone",phone);
+            formData.append("password",password);
+
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/admin/admin/doadd',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        parent.location.reload();
+                        window.close();
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+
+
+         }); 
+
+         $(document).ready(function(){
+            var editor = new Simditor({
+                textarea: $('#editor'),
+                upload: {
+                    url: '/admin/login/uploadimg',
+                    params: '',
+                    fileKey: 'upload_file',
+                    connectionCount: 3,
+                    leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+                },
+                pasteImage: true,
+            });
+        });
+
+
+         // 验证手机号
+        function isPhoneNo(phone) {
+            var pattern = /^1[34578]\d{9}$/;
+            return pattern.test(phone);
+        } 
+
+      
+
+    </script>
+
+{/block}

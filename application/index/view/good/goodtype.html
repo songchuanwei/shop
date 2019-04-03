@@ -1,0 +1,136 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+<!--== Start Page Header ==-->
+<div id="page-header-wrapper">
+    <div class="container">
+        <div class="row">
+            <!-- Page Title Area Start -->
+            <div class="col-6">
+                <div class="page-title-wrap">
+                    <h1>商品类型列表</h1>
+                </div>
+            </div>
+            <!-- Page Title Area End -->
+
+            <!-- Page Breadcrumb Start -->
+            <div class="col-6 m-auto">
+                <nav class="page-breadcrumb-wrap">
+                    <ul class="nav justify-content-end">
+                        <li><a href="/index/index">首页</a></li>
+                        <li><a class="current">商品类型列表</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Page Breadcrumb End -->
+        </div>
+    </div>
+</div>
+<!--== End Page Header ==-->
+
+
+<!--== Start Shop Page Wrapper ==-->
+<div id="shop-page-wrapper" class="page-padding">
+    <div class="container">
+        <div class="row">
+
+            <!-- Sidebar Area Start -->
+            <div class="col-lg-3">
+
+                <div id="sidebar-area-wrap">
+
+
+                    <!-- Single Sidebar Item Start -->
+                    <div class="single-sidebar-wrap">
+                        <h2 class="sidebar-title">商品类型</h2>
+                        <div class="sidebar-body">
+                            <ul class="sidebar-list">
+                                {foreach $goodtypes as $goodtype}
+                                <li><a href="/good/goodtype?good_type_id={$goodtype->id}">{$goodtype->name} <span>({$goodtype->goods()->count()})</span></a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Single Sidebar Item End -->
+
+
+
+
+                </div>
+            </div>
+            <!-- Sidebar Area End -->
+             
+            <!-- Start Shop Page Content -->
+            <div class="col-lg-9">
+                <div class="shop-page-content-wrap">
+                    <div class="products-settings-option d-block d-md-flex">
+                        <div class="product-cong-left d-flex align-items-center">
+                            <ul class="product-view d-flex align-items-center">
+                                <li class="current" data-target="grid-view"><i class="fa fa-th"></i></li>
+                                <li data-target="product-list-view"><i class="fa fa-list-ul"></i></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="shop-page-products-wrap">
+                        <div class="products-wrapper">
+                            <div class="row">
+
+                            	{foreach $goods as $good}
+                                <!-- Single Product Start -->
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="single-product-item">
+                                        <!-- Product Thumbnail -->
+                                        <figure class="product-thumbnail">
+                                            <a href="/good/show?id={$good->id}" class="d-block">
+                                                <img class="primary-thumb" src="{:setImg($good->imgs,1)}"
+                                                     alt="Product"/>
+                                                <img class="secondary-thumb" src="{:setImg($good->imgs,2)}"
+                                                     alt="Product"/>
+                                            </a>
+                                            <figcaption class="product-hvr-content">
+                                                <a href="/good/show?id={$good->id}" class="btn-wishlist" data-toggle="tooltip"
+                                                   data-placement="left" title="添加喜欢"><i
+                                                        class="fa fa-heart-o"></i></a>
+                                                <a href="/good/show?id={$good->id}" class="btn btn-brand btn-quickView" data-toggle="modal"
+                                                   data-target="#quickViewModal">查看</a>
+                                            </figcaption>
+                                        </figure>
+
+                                        <!-- Product Details -->
+                                        <div class="product-details">
+                                            <a href="shop.html" class="product-cat-name">{$good->name}</a>
+                                            <h2 class="product-name"><a href="/good/show?id={$good->id}">{:setStr(strip_tags($good->content),20)}</a></h2>
+                                            <div class="product-prices">
+                                            	{if $good->a_price!=0 && $good->a_price<$good->price}
+                                                <del class="oldPrice">${$good->price}</del>
+                                                <span class="price">${$good->a_price}</span>
+                                                {else/}
+                                                <span class="price">${$good->price}</span>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Single Product End -->
+								{/foreach}
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- End Shop Page Content -->
+
+        </div>
+    </div>
+</div>
+<!--== End Shop Page Wrapper ==-->
+{/block}
+
+{block name="js"}
+<script>
+	
+</script>
+{/block}

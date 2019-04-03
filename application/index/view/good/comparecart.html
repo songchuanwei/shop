@@ -1,0 +1,134 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+
+<!--== Start Page Header ==-->
+<div id="page-header-wrapper">
+    <div class="container">
+        <div class="row">
+            <!-- Page Title Area Start -->
+            <div class="col-6">
+                <div class="page-title-wrap">
+                    <h1>我的对比</h1>
+                </div>
+            </div>
+            <!-- Page Title Area End -->
+
+            <!-- Page Breadcrumb Start -->
+            <div class="col-6 m-auto">
+                <nav class="page-breadcrumb-wrap">
+                    <ul class="nav justify-content-end">
+                        <li><a href="/index/index">首页</a></li>
+                        <li><a href="/good/index">商品</a></li>
+                        <li><aclass="current">我的对比</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Page Breadcrumb End -->
+        </div>
+    </div>
+</div>
+<!--== End Page Header ==-->
+
+<!--== Start Compare Page Wrapper ==-->
+<div id="compare-page-wrapper" class="page-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Compare Page Content Start -->
+                <div class="compare-page-content-wrap">
+                    <div class="compare-table table-responsive">
+                        <table class="table table-bordered mb-0">
+                            <tbody>
+                            <tr>
+                                <td class="first-column">商品缩略图片</td>
+
+                                {foreach $user->compares()->select() as $good}
+                                <td class="product-image-title">
+                                    <a href="/good/show?id={$good->id}" class="image">
+                                        <img class="img-fluid" src="{:setImg($good->imgs,1)}" alt="Product"/>
+                                    </a>
+                                    <a href="/good/show?id={$good->id}" class="category">{$good->good_type()->find()->name}</a>
+                                    <a href="/good/show?id={$good->id}" class="title">{$good->name}</a>
+                                </td>
+                                {/foreach}
+
+                            </tr>
+
+                            <tr>
+                                <td class="first-column">商品简介</td>
+
+                                {foreach $user->compares()->select() as $good}
+                                <td class="pro-desc">
+                                    <p>{:setStr(strip_tags($good->content),50)}</p>
+                                </td>
+                                {/foreach}
+
+                            </tr>
+
+                            <tr>
+                                <td class="first-column">Price</td>
+                                {foreach $user->compares()->select() as $good}
+                                <td class="pro-price">{$good->a_price==0?$good->price:$good->a_price}(元)</td>
+                                {/foreach}
+                            </tr>
+                            <tr>
+                                <td class="first-column">库存</td>
+                                {foreach $user->compares()->select() as $good}
+                                {if $good->stock>=10}
+                                <td class="pro-stock"><span class="text-success">有货</span></td>
+                                {else/}
+                                <td class="pro-stock"><span class="text-danger">库存不足</span></td>
+                                {/if}
+                                {/foreach}
+                            </tr>
+                            <tr>
+                                <td class="first-column">加入购物车</td>
+                                {foreach $user->compares()->select() as $good}
+                                <td><a href="/good/show?id={$good->id}" class="btn btn-small btn-brand">Add to Cart</a></td>
+                                {/foreach}
+                               
+                            </tr>
+                            <tr>
+                                <td class="first-column">操作</td>
+                                {foreach $user->compares()->select() as $good}
+                                <td class="pro-remove">
+                                    <button onclick="love('{$good->id}',3,2)"><i class="fa fa-trash-o"></i></button>
+                                </td>
+                                {/foreach}
+                                
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Compare Page Content End -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Compare Page Wrapper ==-->
+
+{/block}
+{block name="js"}
+	<script>
+		function love(id,type,num) {
+            layer.confirm('确认要删除吗？',function(index){
+                //删除
+                $.ajax({
+                    type: 'GET',
+                    url: '/good/love?good_id='+id+'&type='+type+'&num='+num,
+                    success: function(data){
+                        if(data.error==0){
+                            layer.msg('有缘再见',{icon:1,time:1000});
+                            location.reload();
+                        }else{
+                            layer.msg('修改失败，请稍后再试',{icon:2,time:1000});
+                        }
+                    },
+                });
+            });
+
+        }    
+	</script>
+{/block}

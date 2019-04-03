@@ -1,0 +1,339 @@
+{extend name="layout:index"/}
+
+{block name="css"}
+<style>
+    .product-full-info-reviews .tab-content {
+        border: none;
+        border-top: none;
+        padding: 10px 0 100px 0;
+    }
+    #page-header-wrapper .page-breadcrumb-wrap li a {
+        color: #222222;
+        text-transform: none; 
+        font-size: 1.3rem;
+        line-height: 1;
+        font-weight: 700;
+    }
+</style>
+
+{/block}
+
+{block name="content"}
+
+<!--== Start Page Header ==-->
+<div id="page-header-wrapper">
+    <div class="container">
+        <div class="row">
+            <!-- Page Title Area Start -->
+            <div class="col-6">
+                <div class="page-title-wrap">
+                    <h1>个人中心</h1>
+                </div>
+            </div>
+            <!-- Page Title Area End -->
+
+            <!-- Page Breadcrumb Start -->
+            <div class="col-6 m-auto">
+                <nav class="page-breadcrumb-wrap">
+                    <ul class="nav justify-content-end">
+                        <li><a href="/index/index">首页</a></li>
+                        <li><a href="/index/my" class="current">{$user->username}</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Page Breadcrumb End -->
+        </div>
+    </div>
+</div>
+<!--== End Page Header ==-->
+
+<!--== Start Cart Page Wrapper ==-->
+<div id="cart-page-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Product Full Description Start -->
+                <div class="product-full-info-reviews">
+                    <!-- Single Product tab Menu -->
+                    <nav class="nav" id="nav-tab">
+                        <a class="active" id="description-tab" data-toggle="tab" href="#description">未支付订单</a>
+                        <a id="reviews-tab" data-toggle="tab" href="#reviews">完成订单</a>
+                        <a id="reviews-tab" data-toggle="tab" href="#address">收货地址管理</a>
+                        <a href="/address/add">添加收货地址</a>
+                    </nav>
+                    <!-- Single Product tab Menu -->
+
+                    <!-- Single Product tab Content -->
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="description">
+
+                            <!-- Cart Table Area -->
+                            <div class="cart-table table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="pro-thumbnail" style="width: 25%;">id</th>
+                                        <th class="pro-thumbnail" style="width: 25%;">订单号</th>
+                                        <th class="pro-title" style="width: 25%;">订单总价(元)</th>
+                                        <th class="pro-remove" style="width: 25%;">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                        {foreach $user->orders()->where('status',1)->where('is_pay',0)->order('create_time','desc')->select() as $k=>$order}
+                                        <tr>
+                                        <td class="pro-title">{$k+1}</td>
+                                        <td class="pro-title">{$order->order_num}</td>
+                                        <td class="pro-title">{$order->price}</td>
+                                        <td class="pro-remove">
+                                            <a onclick="show('{$order->id}')"><i class="fa fa-eye" title="查看"></i></a>
+                                            <a onclick="pay('{$order->id}')"><i class="fa fa-credit-card" title="支付"></i></a>
+                                            <a onclick="del('{$order->id}')"><i class="fa fa-trash-o" title="删除"></i></a>
+                                        </td>
+                                        </tr>
+                                            
+                                            <tbody id="tbody{$order->id}" style="display: none;">
+                                            {foreach $order->goods()->select() as $good}
+                                                <tr>
+                                                <td class="pro-thumbnail">
+                                                    <a href="/good/show?id={$good->id}">
+                                                        <img class="img-fluid" src="{:setImg($good->imgs,1)}" style="height: 70px;width: 120px;" />
+                                                    </a>
+                                                 </td>
+                                                <td class="pro-title"><a href="/good/show?id={$good->id}" id="name{$good->id}">{$good->name}</a></td>
+                                                <td class="pro-price"><span>{$good->a_price==0?$good->price:$good->a_price} * ({$good->pivot->num})</span></td>
+                                                <td class="pro-subtotal">
+                                                    <span id="pricenum{$good->id}">{$good->a_price==0?$good->price*$good->pivot->num:$good->a_price*$good->pivot->num}</span>
+                                                </td>
+                                                </tr>
+                                            {/foreach}
+                                                <tr>
+                                                    <td class="pro-thumbnail">{$order->address->name}</td>
+                                                    <td class="pro-thumbnail">{$order->address->phone}</td>
+                                                    <td class="pro-thumbnail" colspan="2">{$order->address->address}</td>
+                                                </tr>
+                                            </tbody>
+                                                
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                         
+                        </div>
+
+                        <div class="tab-pane fade" id="reviews">
+
+                            <!-- Cart Table Area -->
+                            <div class="cart-table table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="pro-thumbnail" style="width: 25%;">订单号</th>
+                                        <th class="pro-title" style="width: 25%;">订单总价(元)</th>
+                                        <th class="pro-thumbnail" style="width: 25%;">状态</th>
+                                        <th class="pro-remove" style="width: 25%;">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                        {foreach $user->orders()->where('status',1)->where('is_pay',1)->order('create_time','desc')->select() as $order}
+                                        <tr>
+                                        <td class="pro-title">{$order->order_num}</td>
+                                        <td class="pro-title">{$order->price}</td>
+                                        <td class="pro-title" style="color: red;">
+                                            {if $order->is_ship==0}待发货
+                                            {elseif $order->is_ship==1 /}已发货
+                                            {else/}订单完成
+                                            {/if}
+                                        </td>
+                                        <td class="pro-remove">
+                                            <a onclick="show('{$order->id}')"><i class="fa fa-eye" title="查看"></i></a>
+                                            {if $order->is_ship==1}
+                                            <a onclick="ship('{$order->id}')"><i class="fa fa-anchor" title="确认收货"></i></a>
+                                            {/if}
+                                            {if $order->is_ship==2}
+                                            <a onclick="location.href='/good/show?id={$order->goods()->find()->id}'"><i class="fa fa-commenting-o" title="评价"></i></a>
+                                            {/if}
+                                        </td>
+                                        </tr>
+                                            
+                                            <tbody id="tbody{$order->id}" style="display: none;">
+                                            {foreach $order->goods()->select() as $good}
+                                                <tr>
+                                                <td class="pro-thumbnail">
+                                                    <a href="/good/show?id={$good->id}">
+                                                        <img class="img-fluid" src="{:setImg($good->imgs,1)}" style="height: 70px;width: 120px;" />
+                                                    </a>
+                                                 </td>
+                                                <td class="pro-title"><a href="/good/show?id={$good->id}" id="name{$good->id}">{$good->name}</a></td>
+                                                <td class="pro-price"><span>{$good->a_price==0?$good->price:$good->a_price} * ({$good->pivot->num})</span></td>
+                                                <td class="pro-subtotal">
+                                                    <span id="pricenum{$good->id}">{$good->a_price==0?$good->price*$good->pivot->num:$good->a_price*$good->pivot->num}</span>
+                                                </td>
+                                                </tr>
+                                            {/foreach}
+                                                <tr>
+                                                    <td class="pro-thumbnail">{$order->address->name}</td>
+                                                    <td class="pro-thumbnail">{$order->address->phone}</td>
+                                                    <td class="pro-thumbnail" colspan="2">{$order->address->address}</td>
+                                                </tr>
+                                            </tbody>
+                                                
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="address">
+
+                            <!-- Cart Table Area -->
+                            <div class="cart-table table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="pro-thumbnail" style="width: 20%;">收货人姓名</th>
+                                        <th class="pro-title" style="width: 20%;">收货人手机号</th>
+                                        <th class="pro-thumbnail" style="width: 40%;">收货人地址</th>
+                                        <th class="pro-remove" style="width: 20%;">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                        {foreach $user->addresss()->where('status',1)->order('create_time','desc')->select() as $address}
+                                        <tr>
+                                        <td class="pro-title">{$address->name}</td>
+                                        <td class="pro-title">{$address->phone}</td>
+                                        <td class="pro-title">{$address->address}</td>
+                                        <td class="pro-remove">
+                                            <a onclick="window.location.href='/address/edit?id={$address->id}';"><i class="fa fa-edit" title="编辑"></i></a>
+                                            <a onclick="deladdress('{$address->id}')"><i class="fa fa-trash-o" title="删除"></i></a>
+                                        </td>
+                                        </tr>
+                                            
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- Single Product tab Content -->
+                </div>
+                <!-- Product Full Description End -->
+            </div>
+
+
+
+            
+        </div>
+
+
+    </div>
+</div>
+<!--== End Cart Page Wrapper ==-->
+
+{/block}
+
+
+{block name="js"}
+<script>
+    
+
+    ///提交方法
+    function pay(id){
+        
+        if(id==0){
+            layer.msg('订单参数不正确！', {icon: 2,time: 2000});
+            return;
+        }
+
+        layer.confirm('确认支付吗？',function(index){
+            $.ajax({
+                type: 'get',
+                url: "/good/pay?order_id="+id,
+                success: function(data){
+                    if(data.error==0){
+                        layer.msg(data.msg,{icon:1,time:1000});
+                        location.reload();
+                    }else{
+                        layer.msg(data.msg,{icon:2,time:1000});
+                    }
+                },
+            });
+        });
+        
+    }
+
+
+    //收货
+    function ship(id){
+        
+        if(id==0){
+            layer.msg('订单参数不正确！', {icon: 2,time: 2000});
+            return;
+        }
+        layer.confirm('确认收货吗？',function(index){
+            $.ajax({
+                type: 'get',
+                url: "/order/ship?id="+id,
+                success: function(data){
+                    if(data.error==0){
+                        layer.msg(data.msg,{icon:1,time:1000});
+                        location.reload();
+                    }else{
+                        layer.msg(data.msg,{icon:2,time:1000});
+                    }
+                },
+            });
+        });
+        
+    }
+
+    function del(id) {
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'get',
+                url: "/order/del?id="+id,
+                success: function(data){
+                    if(data.error==0){
+                        location.reload();
+                        layer.msg(data.msg,{icon:1,time:1000});
+                    }else{
+                        layer.msg(data.msg,{icon:2,time:1000});
+                    }  
+                },
+            });
+        });
+    }
+
+
+    function deladdress(id) {
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'get',
+                url: "/address/del?id="+id,
+                success: function(data){
+                    if(data.error==0){
+                        location.reload();
+                        layer.msg(data.msg,{icon:1,time:1000});
+                    }else{
+                        layer.msg(data.msg,{icon:2,time:1000});
+                    }  
+                },
+            });
+        });
+    }
+
+    function show(id) {
+        var style=$('#tbody'+id).attr('style');
+        if(style=='display: none;'){
+            $('#tbody'+id).attr('style','display:table-row-group;');
+        }else{
+            $('#tbody'+id).attr('style','display: none;');
+        }
+        
+    }
+
+
+</script>
+{/block}

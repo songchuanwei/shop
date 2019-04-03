@@ -1,0 +1,93 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>商品详情：</h5>
+                </div>
+                <div>
+                    <div class="ibox-content profile-content">
+                        <div class="feed-element">
+                            <a href="javascript:;" class="pull-left">
+                                <img alt="image" class="img-circle" src="{$good->admin->img}" onclick="img('{$good->admin->img}')">
+                            </a>
+                            <div class="media-body ">
+                                <small class="pull-right text-navy"></small>
+                                <strong>{$good->admin->username}</strong>  <strong></strong>.
+                                <br>
+                                <small class="text-muted">手机号：{$good->admin->phone}</small>
+                                
+                            </div>
+                        </div>
+
+                        <h4><strong>商品名称：</strong>{$good->name}</h4>
+                        <h4><strong>商品类型：</strong>{$good->good_type()->find()->name}</h4>
+                        <h4><strong>库存：</strong>{$good->stock}</h4>
+                        <h4><strong>发布时间：</strong>{:setDate($good->create_time)}</h4>
+                        <h4><strong>商品价格：</strong>{$good->price}</h4>
+                        <h4><strong>商品优惠后价格：</strong>{$good->a_price}</h4>
+                        <h4><strong>商品图片：</strong></h4>
+                        <p>
+                            {foreach :setImgs($good->imgs) as $v}
+                            <img src="{$v}" style="height: 50px;width: 100px;" onclick="img('{$v}')">
+                            {/foreach}
+                        </p>
+                        <h4><strong>活动内容：</strong></h4><p>{$good->content}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>评论：</h5>
+                </div>
+
+                {foreach $good->comments()->select() as $comment}
+                <div class="col-sm-12">
+                    <div class="social-feed-separated">
+                        
+                        <div class="social-feed-box">
+                            <div class="social-avatar">
+                                <a href="#">
+                                            {$comment->user->username}
+                                        </a>
+                                <small class="text-muted">{$comment->create_time}</small>
+                            </div>
+                            <div class="social-body">
+                                <p>
+                                    {$comment->content}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+
+            </div>
+        </div>
+
+    </div>
+
+{/block}
+
+{block name="js"}
+
+    <script type="text/javascript">
+
+        function img(url) {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                shadeClose: true,
+                content: "<img alt='图片详情' title='图片详情' src=" + url + " />"
+            });
+        }
+        
+    </script>
+{/block}

@@ -1,0 +1,349 @@
+{extend name="layout:index"/}
+{block name="content"}
+
+
+
+<!--== Start Slider Area ==-->
+<section id="slider-area-wrap">
+    <div class="slider-carousel-wrap">
+
+        {foreach $admin1 as $k=>$admin}
+        <!-- Start Single Slide Item -->
+        <div class="single-slide-wrap {$k==1?'slideBg2':''}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="slide-content-wrap">
+                            <h2 class="fadeInLeft animated">{$admin->name}</h2>
+                            <h3 class="fadeInLeft animated two">{:setStr(strip_tags($admin->content),20)}</h3>
+                            <a href="/index/adminshow?id={$admin->id}" class="fadeInLeft animated three btn btn-transparent btn-small">进入店铺</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Single Slide Item -->
+        {/foreach}
+
+    </div>
+</section>
+<!--== End Slider Area ==-->
+
+<!--== Start Categories Banner area ==-->
+<div class="categories-gallery-area">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-lg-6 mb-5 mb-lg-0">
+            {foreach $good1 as $k=>$good}
+            
+                {if $k==0}
+                <div class="single-category-banner">
+                    <figure class="cate-banner-thumb">
+                        <a href="/good/show?id={$good->id}"><img src="{:setImg($good->imgs,1)}" style="height: 400px; width: 100%;" /></a>
+                        <figcaption class="banner-content">
+                            <h2>{$good->name}</h2>
+                            <h4>{$good->admin->name}</h4>
+                        </figcaption>
+                    </figure>
+                </div>
+                {/if}
+                
+                {if $k==2}
+                <div class="single-category-banner layout-two new-vans" style="background-image: url({:setImg($good->imgs,1)});">
+                    <h2>{$good->name}</h2>
+                    <p>{:setStr(strip_tags($good->content),20)}</p>
+                    <a href="/good/show?id={$good->id}">查看详情</a>
+                </div>
+                {/if}
+            
+            {/foreach}
+
+            </div>
+
+            <div class="col-lg-6">
+            {foreach $good1 as $k=>$good}
+            
+                {if $k==1}
+                <div class="single-category-banner layout-two running-shoes text-sm-right" style="background-image: url({:setImg($good->imgs,1)});">
+                    <h2>{$good->name}</h2>
+                    <p>{:setStr(strip_tags($good->content),20)}</p>
+                    <a href="/good/show?id={$good->id}">查看详情</a>
+                </div>
+                {/if}
+
+                {if $k==3}
+                <div class="single-category-banner">
+                    <figure class="cate-banner-thumb">
+                        <a href="/good/show?id={$good->id}"><img src="{:setImg($good->imgs,1)}" style="height: 400px; width: 100%;" /></a>
+                        <figcaption class="banner-content">
+                            <h2>{$good->name}</h2>
+                            <h4>{$good->admin->name}</h4>
+                        </figcaption>
+                    </figure>
+                </div>
+                {/if}
+
+            {/foreach}
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<!--== End Categories Banner area ==-->
+
+<!--== Start Top Interesting Product Area ==-->
+<section id="products-area-wrapper">
+    <div class="container">
+        <!-- Start Section Title Area -->
+        <div class="row">
+            <div class="col-lg-6 m-auto text-center">
+                <div class="section-title-wrap">
+                    <h2>促销商品</h2>
+                    <p>Browse the collection of our best selling and top interesting products. You’ll definitely find
+                        what you are looking for.</p>
+                </div>
+            </div>
+        </div>
+        <!-- End Section Title Area -->
+
+        <!-- Start Products Content Wrapper -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="products-wrapper">
+                    <div class="products-carousel-wrap">
+
+
+                        {foreach $good2 as $good}
+                        <!-- Start Single Product -->
+                        <div class="single-product-item">
+                            <!-- Product Thumbnail -->
+                            <figure class="product-thumbnail">
+                                <a href="/good/show?id={$good->id}" class="d-block">
+                                    <img class="primary-thumb" src="{:setImg($good->imgs,1)}"
+                                         alt="Product"/>
+                                    <img class="secondary-thumb" src="{:setImg($good->imgs,2)}"
+                                         alt="Product"/>
+                                </a>
+                                <figcaption class="product-hvr-content">
+                                    <a href="/good/show?id={$good->id}" class="btn-wishlist" data-toggle="tooltip"
+                                       data-placement="left" title="添加喜欢"><i
+                                            class="fa fa-heart-o"></i></a>
+                                    <a href="/good/show?id={$good->id}" class="btn btn-brand btn-quickView" data-toggle="modal"
+                                       data-target="#quickViewModal">查看</a>
+                                </figcaption>
+                            </figure>
+
+                            <!-- Product Details -->
+                            <div class="product-details">
+                                <a href="shop.html" class="product-cat-name">{$good->name}</a>
+                                <h2 class="product-name"><a href="/good/show?id={$good->id}">{:setStr(strip_tags($good->content),20)}</a></h2>
+                                <div class="product-prices">
+                                    {if $good->a_price!=0 && $good->a_price<$good->price}
+                                    <del class="oldPrice">${$good->price}</del>
+                                    <span class="price">${$good->a_price}</span>
+                                    {else/}
+                                    <span class="price">${$good->price}</span>
+                                    {/if}
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- End Single Product -->
+                        {/foreach}
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Products Content Wrapper -->
+    </div>
+</section>
+<!--== End Top Interesting Product Area ==-->
+
+<!--== Start Parallax Banner Area ==-->
+<section id="parallax-banner-area" class="parallaxBg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 m-auto text-center">
+                <div class="banner-content-wrap">
+                    <h2>佳人购</h2>
+                    <p>“佳人购”网上商城是一个以护肤品、美妆产品为主的网上购物平台，在当今，护肤品、美妆品成为了女性每天生活的必备品。对于广大女性朋友来说，美妆护肤一直以来便是一个格外吸引人的话题，人们总是在追求美丽的路上不断前行，而为了让自己看起来更加年轻，就必不可少的要使用一些护肤品对自己的肌肤进行保养，对自己的容颜进行修饰。也正是基于这样的社会现状，美妆护肤产业得到了很大的发展，而“佳人购”网上商城正是为了满足广大女性需求的一个美妆购物平台。</p>
+                    <a href="/good/index" class="btn btn-transparent">了解更多</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--== End Parallax Banner Area ==-->
+
+<!--== Start New, Feature Products & Testimonial Area ==-->
+<section id="new-feature-pro-reviews">
+    <div class="container">
+        <div class="row">
+
+            {foreach $goodtype1 as $goodtype}
+            <!-- Start New Products Area -->
+            <div class="col-lg-4 col-sm-6">
+                <div id="new-products-area">
+                    <!-- Section Title -->
+                    <div class="section-title-wrap style-two">
+                        <h2>{$goodtype->name}</h2>
+                    </div>
+
+                    <!-- Product Content -->
+                    <div class="products-wrapper product-list-view small-list">
+                        <div class="product-vertical-carousel">
+
+                            {foreach $goodtype->goods()->where('status',1)->limit(9)->select() as $good}
+                            <!-- Start Single Product -->
+                            <div class="single-product-item">
+                                <!-- Product Thumbnail -->
+                                <figure class="product-thumbnail">
+                                    <a href="/good/show?id={$good->id}" class="d-block">
+                                        <img class="primary-thumb" src="{:setImg($good->imgs,1)}"
+                                             alt="Product"/>
+                                        <img class="secondary-thumb" src="{:setImg($good->imgs,2)}"
+                                             alt="Product"/>
+                                    </a>
+                                </figure>
+
+                                <!-- Product Details -->
+                                <div class="product-details">
+                                    <h2 class="product-name"><a href="/good/show?id={$good->id}">{$good->name}</a></h2>
+                                    <div class="product-prices">
+                                        <span class="price">{$good->a_price==0?$good->price:$good->a_price}(元)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Single Product -->
+                            {/foreach}
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End New Products Area -->
+            {/foreach}
+    
+        </div>
+    </div>
+</section>
+<!--== End New, Feature Products & Testimonial Area ==-->
+
+<!--== Start Blog Section ==-->
+<section id="blog-section-wrapper">
+    <div class="container">
+        <!-- Start Section Title Area -->
+        <div class="row">
+            <div class="col-lg-6 m-auto text-center">
+                <div class="section-title-wrap">
+                    <h2>最新公告</h2>
+                    <p>Do you want to present posts in the best way to highlight interesting moments of your blog? Focus
+                        on the latest news!</p>
+                </div>
+            </div>
+        </div>
+        <!-- End Section Title Area -->
+
+        <!-- Start Blog Content -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="blog-content-wrapper">
+                    <div class="blog-content-carousel">
+
+                        {foreach $blog1 as $k=>$blog}
+                        <!-- Single Blog Start -->
+                        <div class="single-blog-wrap">
+                            <figure class="blog-thumbnail">
+                                <a href="/blog/show?id={$blog->id}"><img src="/index/img/blog/blog-{$k}.jpg" alt="Blog"/></a>
+                            </figure>
+                            <div class="blog-details" style="min-height: 200px;">
+                                <h3><a href="/blog/show?id={$blog->id}">{$blog->title}</a></h3>
+                                <div class="blog-meta">
+                                    <a href="/blog/show?id={$blog->id}">By Admin</a>
+                                    <a href="/blog/show?id={$blog->id}">{:setDate($blog->create_time)}</a>
+                                </div>
+                                <p>{:setStr(strip_tags($blog->content),50)}</p>
+                                <a href="/blog/show?id={$blog->id}" class="btn-readmore">Continue Reading</a>
+                            </div>
+                        </div>
+                        <!-- Single Blog End -->
+                        {/foreach}
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Blog Content -->
+    </div>
+</section>
+<!--== End Blog Section ==-->
+
+<!--== Start Brand Carousel Area ==-->
+<div class="brand-logo-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="brand-logo-wrapper">
+                    <div class="brand-logo-carousel">
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand1.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand2.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand3.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand4.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand5.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand6.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+
+                        <!-- Single Brand Logo Start -->
+                        <div class="single-brand-item">
+                            <a href="#"><img src="/index/img/brand-logo/brand7.png" alt="brand"/></a>
+                        </div>
+                        <!-- Single Brand Logo End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Brand Carousel Area ==-->
+
+{/block}
+
+{block name="js"}
+    
+{/block}
+

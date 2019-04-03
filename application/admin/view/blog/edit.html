@@ -1,0 +1,116 @@
+{extend name="layout:index"/}
+
+{block name="css"}
+    <link rel="stylesheet" type="text/css" href="/admin/simditor/css/simditor.css">
+{/block}
+{block name="header_js"}
+    <script type="text/javascript"  src="/admin/simditor/js/module.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/hotkeys.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/uploader.js"></script>
+    <script type="text/javascript"  src="/admin/simditor/js/simditor.js"></script>
+{/block}
+
+{block name="content"}
+    <div class="ibox-title">
+        <h5>修改公告</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="form-horizontal m-t">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">公告标题：</label>
+                <div class="col-sm-10">
+                    <input id="title" name="title" type="text" value="{$blog->title}" class="form-control" placeholder="公告标题" required="" aria-required="true">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">内容：</label>
+                <div class="col-sm-10">
+                    <textarea name="content" id="editor" cols="100" rows="8" minlength="10" style="visibility:hidden;"placeholder="填写内容..">{$blog->content}
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-8 col-sm-offset-3">
+                    <button id="btn" class="btn btn-primary" type="submit">提交</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+{/block}
+
+{block name="js"}
+    <script src="/admin/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/admin/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/admin/js/demo/form-validate-demo.min.js"></script>
+
+    <script>
+
+       $("#btn").click(function(event){
+            var title=$('#title').val();
+            var editor=$('#editor').val();
+            if(title.length==0){
+                layer.msg("公告标题不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            if(editor.length==0){
+                layer.msg("公告内容不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/admin/blog/doedit',
+                data: {
+                    title:title,
+                    content:editor,
+                    id:'{$blog->id}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        parent.location.reload();
+                        window.close();
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+        }); 
+
+
+        $(document).ready(function(){
+            var editor = new Simditor({
+                textarea: $('#editor'),
+                upload: {
+                    url: '/admin/login/uploadimg',
+                    params: '',
+                    fileKey: 'upload_file',
+                    connectionCount: 3,
+                    leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+                },
+                pasteImage: true,
+            });
+        });
+
+    </script>
+
+{/block}

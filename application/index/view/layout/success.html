@@ -1,0 +1,15 @@
+<input type="hidden" value="{:session('success')}" id="success">
+<input type="hidden" value="{:session('error')}" id="error">
+
+<script>
+    var success=$('#success').val();
+    var error=$('#error').val();
+    
+    if(success){
+
+        alert(success); 
+    }
+    if(error){
+        alert(error); 
+    }
+</script>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="meta description">
+
+    <title>佳人购</title>
+
+    <!--== Google Fonts ==-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,900" rel="stylesheet">
+
+    <!--=== Bootstrap CSS ===-->
+    <link href="/index/css/vendor/bootstrap.min.css" rel="stylesheet"/>
+    <!--=== Font-Awesome CSS ===-->
+    <link href="/index/css/vendor/font-awesome.css" rel="stylesheet"/>
+    <!--=== Plugins CSS ===-->
+    <link href="/index/css/plugins.css" rel="stylesheet"/>
+    <!--=== Main Style CSS ===-->
+    <link href="/index/css/style.css" rel="stylesheet"/>
+
+    {block name="css"} {/block}
+
+    <!-- Modernizer JS -->
+    <script src="/index/js/vendor/modernizr-2.8.3.min.js"></script>
+    {block name="header_js"} {/block}
+
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <header id="header-area">
+        <!-- Start PreHeader Area -->
+        <div class="preheader-area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-left">
+                        <!-- Start PreHeader Left -->
+                        <div class="preheader-left-wrap">
+                            <a href="tel:1018889999"><i class="fa fa-phone"></i> 88888888</a>
+                            <a href="#">单笔订单超过1000元可免费送货</a>
+                        </div>
+                        <!-- End PreHeader Left -->
+                    </div>
+
+                    <div class="col-md-6 mt-3 mt-md-0">
+                        <!-- Start PreHeader Right -->
+                        <div class="preheader-right-wrap">
+                            <nav id="site-settings">
+                                <ul class="nav justify-content-center justify-content-md-end">
+                                    
+                                    {if condition="session('username')"}
+                                        <li class="dropdown-show"><a href="#" class="arrow-toggle">欢迎{:session('username')}</a>
+                                            <ul class="dropdown-nav">
+                                                <li><a href="/index/my">个人中心</a></li>
+                                                <li><a href="/good/goodcart">购物车</a></li>
+                                                <li><a href="/good/lovecart">我的喜欢</a></li>
+                                                <li><a href="/good/comparecart">我的对比</a></li>
+                                                <li><a href="/login/user">个人信息修改</a></li>
+                                                <li><a href="/login/logout">退出</a></li>
+                                            </ul>
+                                        </li> 
+                                    {else /}
+                                        <li class="dropdown-show"><a href="#" class="arrow-toggle">登陆/注册</a>
+                                            <ul class="dropdown-nav">
+                                                <li><a href="/login/login">登陆</a></li>
+                                                <li><a href="/login/Register">注册</a></li>
+                                            </ul>
+                                        </li>
+                                    {/if}
+                                    <li class="dropdown-show"><a href="#" class="arrow-toggle"><img
+                                            src="/index/img/icons/flag/en.png" alt="English"/> English</a>
+                                        <ul class="dropdown-nav">
+                                            <li><a href="#"><img src="/index/img/icons/flag/de.png" alt="German"/>
+                                                German</a></li>
+                                            <li><a href="#"><img src="/index/img/icons/flag/bd.png" alt="Bengali"/> Bengali</a>
+                                            </li>
+                                            <li><a href="#"><img src="/index/img/icons/flag/fr.png" alt="France"/>
+                                                France</a></li>
+                                        </ul>
+                                    </li>
+
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- End PreHeader Right -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End PreHeader Area -->
+
+        <!-- Start Header Bottom  -->
+        <div class="header-bottom-area" id="fixheader">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Start Navigation // Main Menu -->
+                    <div class="col-lg-5 m-auto d-none d-lg-block">
+                        <div id="navigation-area-wrap">
+                            <nav class="mainmenu">
+                                <ul id="main-navbar" class="clearfix">
+                                    <li><a href="/index/index">首页</a></li>
+
+                                    <li class="dropdown-show"><a href="#"  class="arrow-toggle">商店</a>
+                                        <ul class="dropdown-nav">
+                                            <li><a href="/good/index">商品列表</a> </li>
+                                            <li><a href="/index/admins">店铺列表</a> </li> 
+                                            <li><a href="/good/goodtype">商品类型列表</a> </li> 
+                                        </ul>
+                                    </li>
+
+                                    <li><a href="/blog/index">公告</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <!-- End Navigation // Main Menu -->
+
+                    <!-- Start Logo Area -->
+                    <div class="col-lg-2 col-sm-4 m-auto text-center text-sm-left">
+                        <div class="logo-wrap mb-4 mb-sm-0">
+                            <a href="/index/index"><img src="/index/img/logo.png" alt="Logo"/></a>
+                        </div>
+                    </div>
+                    <!-- End Logo Area -->
+
+                    <!-- Header Shop Cong Area -->
+                    <div class="col-lg-5 col-sm-8 m-auto">
+                        <div class="header-configure-area d-flex justify-content-center justify-content-sm-end align-items-center">
+
+                            <!-- Start Mini Cart Area -->
+                            <div class="mini-cart-wrap">
+                                <button class="btn-minicart"><i class="fa fa-shopping-cart"></i>
+                                    <span class="count"> {if !empty($user)}{$user->goods()->count()}{else/}0{/if}</span>                                       
+                                </button>
+
+                                <div class="minicart-content">
+                                    <div class="mini-cart-body">
+                                        
+                                        {if !empty($user)}
+                                        {foreach $user->goods()->select() as $goodindex}
+                                        <!-- Single Cart Item Start -->
+                                        <div class="single-cart-item d-flex">
+                                            <figure class="product-thumb">
+                                               <a href="/good/show?id={$goodindex->id}">
+                                                    <img src="{:setImg($goodindex->imgs,1)}"/>
+                                                </a>
+                                            </figure>
+
+                                            <div class="product-details">
+                                                <h2><a href="/good/show?id={$goodindex->id}">{$goodindex->name}</a></h2>
+                                                <div class="cal d-flex align-items-center">
+                                                    <span class="quantity">{$goodindex->pivot->num}</span>
+                                                    <span class="multiplication">  </span>
+                                                    <span class="price">{$goodindex->a_price==0?$goodindex->price*$goodindex->pivot->num:$goodindex->a_price*$goodindex->pivot->num}(元)</span>
+                                                </div>
+                                            </div>
+                                            <a onclick="delcart('{$goodindex->pivot->id}')" class="remove-icon"><i class="fa fa-trash-o"></i></a>
+                                        </div>
+                                        <!-- Single Cart Item End -->
+                                        {/foreach}
+                                        {/if}
+
+                                    </div>
+                                    <div class="mini-cart-footer text-center">
+                                        <a href="/good/goodcart" class="btn btn-transparent btn-small mr-3">进入购物扯</a>
+                                        <a href="/good/goodcart" class="btn btn-transparent btn-small">支付</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Mini Cart Area -->
+                        </div>
+                    </div>
+                    <!-- Header Shop Cong Area -->
+                </div>
+            </div>
+        </div>
+        <!-- End Header Bottom  -->
+    </header>
+
+     {block name="content"} {/block}
+
+     <!--== Start Footer Section ===-->
+    <footer id="footer-area">
+
+        <!-- Start Footer Widget Area -->
+        <div class="footer-widget-wrapper">
+            <div class="container">
+                <div class="widget-content-wrap">
+                    <div class="row">
+                        <!-- Start Single Footer Widget -->
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="single-footer-widget-wrap footer-about">
+                                <a href="index.html" class="footerLogo"><img src="/index/img/logo-white.png" alt="logo"/></a>
+                                <p>“佳人购”网上商城是一个以护肤品、美妆产品为主的网上购物平台，在当今，护肤品、美妆品成为了女性每天生活的必备品。对于广大女性朋友来说，美妆护肤一直以来便是一个格外吸引人的话题，人们总是在追求美丽的路上不断前行，而为了让自己看起来更加年轻，就必不可少的要使用一些护肤品对自己的肌肤进行保养，对自己的容颜进行修饰。也正是基于这样的社会现状，美妆护肤产业得到了很大的发展，而“佳人购”网上商城正是为了满足广大女性需求的一个美妆购物平台。</p>
+
+                                <address>
+                                    <p>Phone: <a>88888888</a></p>
+                                </address>
+                            </div>
+                        </div>
+                        <!-- End Single Footer Widget -->
+                        
+                        <div class="col-lg-2">
+                        </div>
+
+
+                        <!-- Start Single Footer Widget -->
+                        <div class="col-lg-3 col-sm-6 col-md-3">
+                            <div class="single-footer-widget-wrap">
+                                <h3 class="widget-title">优选店铺</h3>
+
+                                <div class="widget-body">
+                                    <ul class="widget-list">
+                                        {foreach $adminindex as $adminaaa}
+                                        <li><a href="/index/adminshow?id={$adminaaa->id}">{$adminaaa->name}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Single Footer Widget -->
+
+                        <!-- Start Single Footer Widget -->
+                        <div class="col-lg-3 col-sm-6 col-md-3">
+                            <div class="single-footer-widget-wrap">
+                                <h3 class="widget-title">优选类型</h3>
+
+                                <div class="widget-body">
+                                    <ul class="widget-list">
+                                        {foreach $goodtypeindex as $goodtypeaaa}
+                                        <li><a href="/good/goodtype?good_type_id={$goodtypeaaa->id}">{$goodtypeaaa->name}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Single Footer Widget -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Footer Widget Area -->
+
+        <!-- Start Footer Copyright Area -->
+        <div class="footer-copyright-area">
+            <div class="container">
+                <div class="row">
+                    <!-- Start Copyright Content -->
+                    <div class="col-sm-6 text-center text-sm-left">
+                        <div class="copyright-content mt-4 mt-sm-0">
+                            <p>Copyright &copy; 2019 <a href="/good/index">theBell</a>.</p>
+                        </div>
+                    </div>
+                    <!-- End Copyright Content -->
+
+                    <div class="col-sm-6 text-center text-sm-right order-first order-sm-last">
+                        <img src="/index/img/payment-icon.png" alt="Payment Method"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Footer Copyright Area -->
+    </footer>
+    <!--== End Footer Section ===-->
+
+    <!-- Scroll to Top Start -->
+    <a href="#" class="scrolltotop"><i class="fa fa-angle-double-up"></i></a>
+    <!-- Scroll to Top End -->
+
+    <!--=======================Javascript============================-->
+    <!--=== Jquery Min Js ===-->
+    <script src="/index/js/vendor/jquery-3.3.1.min.js"></script>
+    <!--=== Jquery Migrate Min Js ===-->
+    <script src="/index/js/vendor/jquery-migrate-1.4.1.min.js"></script>
+    <!--=== Popper Min Js ===-->
+    <script src="/index/js/vendor/popper.min.js"></script>
+    <!--=== Bootstrap Min Js ===-->
+    <script src="/index/js/vendor/bootstrap.min.js"></script>
+    <!--=== Plugins Js ===-->
+    <script src="/index/js/plugins.js"></script>
+    <!--=== Ajax Mail Js ===-->
+    <script src="/index/js/ajax-mail.js"></script>
+
+    <!--=== Active Js ===-->
+    <script src="/index/js/active.js"></script>
+
+    <script src="/admin/js/plugins/layer/layer.min.js"></script>
+
+    {include file="layout/success" /}
+
+    {block name="js"} {/block}
+
+    <script>
+        function delcart(id) {
+            layer.confirm('确认要删除吗？',function(index){
+                $.ajax({
+                    type: 'get',
+                    url: "/good/goodcartdel?id="+id,
+                    success: function(data){
+                        if(data.error==0){
+                            layer.msg(data.msg,{icon:1,time:1000});
+                            location.reload();
+                        }else{
+                            layer.msg(data.msg,{icon:2,time:1000});
+                        }  
+                    },
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>
+

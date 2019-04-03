@@ -1,0 +1,155 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+<!--== Start Page Header ==-->
+<div id="page-header-wrapper">
+    <div class="container">
+        <div class="row">
+            <!-- Page Title Area Start -->
+            <div class="col-6">
+                <div class="page-title-wrap">
+                    <h1>店铺列表</h1>
+                </div>
+            </div>
+            <!-- Page Title Area End -->
+
+            <!-- Page Breadcrumb Start -->
+            <div class="col-6 m-auto">
+                <nav class="page-breadcrumb-wrap">
+                    <ul class="nav justify-content-end">
+                        <li><a href="/index/index">首页</a></li>
+                        <li><a href="/index/admins" class="current">店铺列表</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Page Breadcrumb End -->
+        </div>
+    </div>
+</div>
+<!--== End Page Header ==-->
+
+
+<!--== Start Shop Page Wrapper ==-->
+<div id="shop-page-wrapper" class="page-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Start Shop Page Content -->
+            <div class="col-lg-9">
+                <div class="blog-page-content-wrap">
+                    <div class="row">
+                        <!-- Single Blog Item Start -->
+
+                        {foreach $admins as $admin}
+                        <div class="col-md-6">
+                            <div class="single-blog-wrap" style="min-height: 420px;">
+                                <figure class="blog-thumbnail">
+                                    <a href="/index/adminshow?id={$admin->id}"><img src="{$admin->img}"></a>
+                                </figure>
+                                <div class="blog-details">
+                                    <h3><a href="/index/adminshow?id={$admin->id}">{$admin->name}</a></h3>
+                                    <div class="blog-meta">
+                                        <a href="/index/adminshow?id={$admin->id}">{$admin->username}</a>
+                                        <a href="/index/adminshow?id={$admin->id}">{:setDate($admin->create_time)}</a>
+                                        <a href="/index/adminshow?id={$admin->id}">{$admin->phone}</a>
+                                    </div>
+                                    <p>{:setStr(strip_tags($admin->content),100)}</p>
+                                    <a href="/index/adminshow?id={$admin->id}" class="btn-readmore">Continue Reading</a>
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+
+                        <!-- Single Blog Item End -->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="pagination-area-wrap">
+                                <nav class="page-pagination">
+                                    {$admins->render()}
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- End Shop Page Content -->
+
+            <!-- Sidebar Area Start -->
+            <div class="col-lg-3">
+                <div id="sidebar-area-wrap">
+                    <!-- Single Sidebar Item Start -->
+                    <div class="single-sidebar-wrap">
+                        <h2 class="sidebar-title">搜索</h2>
+                        <div class="sidebar-body">
+                            <div class="sidebar-search">
+                                <form action="/index/admins">
+                                    <input type="search" value="{$title}" name="title" placeholder="店铺名称/店铺简介">
+                                    <button type="submit"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Single Sidebar Item Start -->
+                    <div class="single-sidebar-wrap">
+                        <h2 class="sidebar-title">商品类型</h2>
+                        <div class="sidebar-body">
+                            <ul class="sidebar-list">
+                                {foreach $goodtypes as $goodtype}
+                                <li><a href="/good/index?good_type_id={$goodtype->id}">{$goodtype->name} <span>({$goodtype->goods()->count()})</span></a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Single Sidebar Item End -->
+
+                    <!-- Single Sidebar Item Start -->
+                    <div class="single-sidebar-wrap">
+                        <h2 class="sidebar-title">促销商品</h2>
+                        <div class="sidebar-body">
+                            <div class="products-wrapper product-list-view small-list">
+                                
+                                {foreach $goods1 as $good}
+                                <!-- Start Single Product -->
+                                <div class="single-product-item">
+                                    <!-- Product Thumbnail -->
+                                    <figure class="product-thumbnail">
+                                        <a href="/good/show?id={$good->id}" class="d-block">
+                                            <img class="primary-thumb" src="{:setImg($good->imgs,1)}"
+                                                 alt="Product"/>
+                                            <img class="secondary-thumb" src="{:setImg($good->imgs,2)}"
+                                                 alt="Product"/>
+                                        </a>
+                                    </figure>
+
+                                    <!-- Product Details -->
+                                    <div class="product-details">
+                                        <h2 class="product-name"><a href="/good/show?id={$good->id}">{$good->name}</a></h2>
+                                        <div class="product-prices">
+                                            <span class="price">${$good->a_price}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Single Product -->
+                                {/foreach}
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Single Sidebar Item End -->
+                </div>
+            </div>
+            <!-- Sidebar Area End -->
+        </div>
+    </div>
+</div>
+<!--== End Shop Page Wrapper ==-->
+{/block}
+
+{block name="js"}
+<script>
+	
+
+</script>
+{/block}

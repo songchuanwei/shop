@@ -1,0 +1,106 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+
+<!--== Start Login & Register Page ==-->
+<div id="login_reg-page-wrapper" class="page-padding">
+    <div class="container">
+        <div class="member-area-from-wrap">
+            <div class="row">
+
+                <!-- Register Content Start -->
+                <div class="col-lg-6">
+                    <div class="login-reg-form-wrap signup-form">
+                        <h2>增加收货地址</h2>
+                        
+                            <div class="single-input-item">
+                                <input type="text" id="name" placeholder="收货人姓名：" required/>
+                            </div>
+
+                            <div class="single-input-item">
+                                <input type="number" id="phone" placeholder="收货人手机号：" required/>
+                            </div>
+
+                            <div class="single-input-item">
+                                <input type="text" id="address" placeholder="收货人地址：" required/>
+                            </div>
+
+                            <div class="single-input-item">
+                                <button id="btn" class="btn btn-brand">添加</button>
+                            </div>
+                        
+                    </div>
+                </div>
+                <!-- Register Content End -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Login & Register Page ==-->
+
+
+{/block}
+
+{block name="js"}
+    <script>
+
+       $("#btn").click(function(event){
+            var name=$('#name').val();
+            var phone=$('#phone').val();
+            var address=$('#address').val();
+            if(name.length==0){
+                layer.msg("收货人姓名不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(phone.length==0 || isPhoneNo(phone) == false){
+                layer.msg("收货人手机号格式不正确",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+            if(address.length==0){
+                layer.msg("收货人地址不能为空",{icon:2,time:1000});
+                event.preventDefault();
+                return false;
+            }
+
+            //请求验证
+            $.ajax({
+                type: 'post',
+                url: '/address/doadd',
+                data: {
+                    name:name,
+                    phone:phone,
+                    address:address
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.error ==0 ){
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000,
+                            shade:0.5
+                        });
+                        window.location.href='/index/my';
+                    }else{
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000, 
+                            shade:0.5
+                        });
+                    }
+                }
+            });
+        }); 
+
+
+       
+
+        // 验证手机号
+        function isPhoneNo(phone) {
+            var pattern = /^1[34578]\d{9}$/;
+            return pattern.test(phone);
+        } 
+
+    </script>
+{/block}

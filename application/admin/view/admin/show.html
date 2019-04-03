@@ -1,0 +1,60 @@
+{extend name="layout:index"/}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>店铺详情：</h5>
+                </div>
+                <div>
+                    <div class="ibox-content profile-content">
+                        <div class="feed-element">
+                            <a href="javascript:;" class="pull-left">
+                                <img alt="image" class="img-circle" src="{$admin->img}" onclick="img('{$admin->img}')">
+                            </a>
+                            <div class="media-body ">
+                                <small class="pull-right text-navy"></small>
+                                <strong>{$admin->username}</strong>----<strong>{$admin->name}</strong>
+                                <br>
+                                <small class="text-muted">手机号：{$admin->phone}</small>
+                                
+                            </div>
+                        </div>
+
+                        <h4><strong>店铺地址：</strong>{$admin->address}</h4>
+                        <h4><strong>店铺类型：</strong>
+                        {if condition="$admin->type eq 0"}
+                        <span class="label label-primary">普通店铺</span><br>
+                        {else /}
+                        <span class="label label-danger">管理员店铺</span><br>
+                        {/if}
+                        </h4>
+                        <h4><strong>店铺简介：</strong></h4><p>{$admin->content}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+{/block}
+
+{block name="js"}
+
+    <script type="text/javascript">
+
+        function img(url) {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                shadeClose: true,
+                content: "<img alt='图片详情' title='图片详情' src=" + url + " />"
+            });
+        }
+        
+    </script>
+{/block}
